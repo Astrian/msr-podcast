@@ -6,17 +6,17 @@ import Vapor
 import AVFoundation
 
 
-func refresh(_ req: Request) async {
+func refresh(_ db: Database) async {
   do {
     let (data, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/albums")
     let albumList = try JSONDecoder().decode(AlbumsEndpoint.self, from: data)
     for album in albumList.data {
-      var albumEntity = try await Album.query(on: req.db).filter(\.$cid == album.cid).first()
+      var albumEntity = try await Album.query(on: db).filter(\.$cid == album.cid).first()
       if albumEntity == nil {
         let (albumEndpointData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/album/\(album.cid)/detail")
         let albumDetail = try JSONDecoder().decode(AlbumEndpoint.self, from: albumEndpointData)
         albumEntity = Album(albumDetail.data)
-        try await albumEntity?.create(on: req.db)
+        try await albumEntity?.create(on: db)
         
         for song in albumDetail.data.songs {
           let (songEndpoingData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
@@ -26,7 +26,7 @@ func refresh(_ req: Request) async {
           
           let songEntity = Song(songDetail.data, duration ?? 0.0)
           songEntity.$album.id = albumEntity!.id!
-          try await songEntity.create(on: req.db)
+          try await songEntity.create(on: db)
         }
       }
     }

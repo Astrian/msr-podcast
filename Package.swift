@@ -12,6 +12,7 @@ let package = Package(
     .package(url: "https://github.com/Astrian/swift-async-network", .upToNextMajor(from: "1.0.0")),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+    .package(url: "https://github.com/BrettRToomey/Jobs.git", from: "1.1.1"),
   ],
   targets: [
     .executableTarget(
@@ -21,6 +22,7 @@ let package = Package(
         .product(name: "SwiftAsyncNetwork", package: "swift-async-network"),
         .product(name: "Fluent", package: "fluent"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+        .product(name: "Jobs", package: "jobs"),
       ],
       swiftSettings: [
         // Enable better optimizations when building in Release configuration. Despite the use of

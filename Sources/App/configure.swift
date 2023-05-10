@@ -1,6 +1,7 @@
 import Vapor
 import Fluent
 import FluentSQLiteDriver
+import Jobs
 
 // configures your application
 public func configure(_ app: Application) async throws {
@@ -13,6 +14,18 @@ public func configure(_ app: Application) async throws {
   app.databases.use(.sqlite(.file("data.db")), as: .sqlite)
   app.migrations.add(CreateSong())
   app.migrations.add(CreateAlbum())
+  
+  Jobs.add(interval: .hours(1)) {
+    Task {
+      let now = Date()
+      let startTime: TimeInterval = now.timeIntervalSince1970
+      print("refresh start")
+      await refresh(app.db)
+      let end = Date()
+      let endTime: TimeInterval = end.timeIntervalSince1970
+      print("refresh complete, time spent: \(endTime - startTime)")
+    }
+  }
 }
 
 
