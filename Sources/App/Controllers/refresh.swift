@@ -3,6 +3,7 @@ import FluentKit
 import Foundation
 import FluentSQLiteDriver
 import Vapor
+import AVFoundation
 
 
 func refresh(_ req: Request) async {
@@ -20,7 +21,10 @@ func refresh(_ req: Request) async {
         for song in albumDetail.data.songs {
           let (songEndpoingData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
           let songDetail = try JSONDecoder().decode(SongEndpoint.self, from: songEndpoingData)
-          let songEntity = Song(songDetail.data)
+          
+          let duration = getAudioFileDuration(url: URL(string: songDetail.data.sourceUrl)!)
+          
+          let songEntity = Song(songDetail.data, duration ?? 0.0)
           songEntity.$album.id = albumEntity!.id!
           try await songEntity.create(on: req.db)
         }
@@ -99,4 +103,10 @@ struct AlbumEndpointEntity: Decodable {
   let coverUrl: String
   let coverDeUrl: String
   let songs: [AlbumsEndpointEntitySongs]
+}
+
+func getAudioFileDuration(url: URL) -> Double? {
+  let asset = AVURLAsset(url: url)
+  let audioDuration = asset.duration
+  return CMTimeGetSeconds(audioDuration)
 }

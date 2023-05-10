@@ -12,7 +12,7 @@ import FluentSQLiteDriver
 final class Song: Model {
   init() {}
   
-  init(_ song: SongEndpointEntity) {
+  init(_ song: SongEndpointEntity, _ duration: Double = 0.0) {
     self.id = UUID()
     
     self.cid = song.cid
@@ -21,8 +21,7 @@ final class Song: Model {
     self.mvUrl = song.mvUrl ?? ""
     self.name = song.name
     self.sourceUrl = song.sourceUrl
-    self.duration = 0
-    self.pubTime = 0
+    self.duration = duration
     
     self.artists = ""
     if song.artists.count > 0 {
@@ -46,8 +45,7 @@ final class Song: Model {
   @Field(key: "mvUrl") var mvUrl: String
   @Field(key: "name") var name: String
   @Field(key: "sourceUrl") var sourceUrl: String
-  @Field(key: "duration") var duration: Int
-  @Field(key: "pubTime") var pubTime: Int
+  @Field(key: "duration") var duration: Double
   
   @Parent(key: "album") var album: Album
 }
@@ -64,8 +62,7 @@ struct CreateSong: AsyncMigration {
       .field("mvCoverUrl", .string)
       .field("name", .string)
       .field("sourceUrl", .string)
-      .field("duration", .int)
-      .field("pubTime", .int)
+      .field("duration", .double)
       .field("album", .string)
       .create()
   }
