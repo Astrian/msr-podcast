@@ -1,4 +1,6 @@
 import Vapor
+import Fluent
+import FluentSQLiteDriver
 
 // configures your application
 public func configure(_ app: Application) async throws {
@@ -7,4 +9,10 @@ public func configure(_ app: Application) async throws {
 
   // register routes
   try routes(app)
+  
+  app.databases.use(.sqlite(.file("data.db")), as: .sqlite)
+  app.migrations.add(CreateSong())
+  app.migrations.add(CreateAlbum())
 }
+
+
