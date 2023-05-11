@@ -1,4 +1,3 @@
-import SwiftAsyncNetwork
 import FluentKit
 import Foundation
 import FluentSQLiteDriver
@@ -6,25 +5,24 @@ import Vapor
 import AVFoundation
 
 
-func refresh(_ db: Database) async {
+func refresh(_ db: Database, _ client: Client) async {
   do {
-    let (data, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/albums")
-    let albumList = try JSONDecoder().decode(AlbumsEndpoint.self, from: data)
+    let data = try await client.get("https://monster-siren.hypergryph.com/api/albums")
+    let albumList = try data.content.decode(AlbumsEndpoint.self)
     for album in albumList.data {
       var albumEntity = try await Album.query(on: db).filter(\.$cid == album.cid).first()
       if albumEntity == nil {
-        let (albumEndpointData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/album/\(album.cid)/detail")
-        let albumDetail = try JSONDecoder().decode(AlbumEndpoint.self, from: albumEndpointData)
+        let albumEndpointData = try await client.get("https://monster-siren.hypergryph.com/api/album/\(album.cid)/detail")
+        let albumDetail = try albumEndpointData.content.decode(AlbumEndpoint.self)
         albumEntity = Album(albumDetail.data)
         try await albumEntity?.create(on: db)
         try await albumEntity?.save(on: db)
         
         for song in albumDetail.data.songs {
-          let (songEndpoingData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
-          let songDetail = try JSONDecoder().decode(SongEndpoint.self, from: songEndpoingData)
-          let (audiofile, _) = try await SAN.GET(songDetail.data.sourceUrl)
+          let songEndpoingData = try await client.get("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
+          let songDetail = try songEndpoingData.content.decode(SongEndpoint.self)
           let duration = getAudioFileDuration(url: URL(string: songDetail.data.sourceUrl)!)
-          let size = audiofile.count
+          let size = 0
           let songEntity = Song(songDetail.data, duration ?? 0.0, size)
           try await albumEntity?.$song.create(songEntity, on: db)
           try await songEntity.save(on: db)

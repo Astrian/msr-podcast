@@ -118,15 +118,6 @@
       }
     },
     {
-      "identity" : "swift-async-network",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Astrian/swift-async-network",
-      "state" : {
-        "revision" : "67d8c360d7c2816da9f617fe3b20e08d03cefa25",
-        "version" : "1.0.0"
-      }
-    },
-    {
       "identity" : "swift-atomics",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-atomics.git",

@@ -22,7 +22,7 @@ public func configure(_ app: Application) async throws {
       let now = Date()
       let startTime: TimeInterval = now.timeIntervalSince1970
       print("refresh start")
-      await refresh(app.db)
+      await refresh(app.db, app.client)
       let end = Date()
       let endTime: TimeInterval = end.timeIntervalSince1970
       print("refresh complete, time spent: \(endTime - startTime)")
