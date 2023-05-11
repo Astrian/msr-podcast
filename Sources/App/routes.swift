@@ -81,11 +81,9 @@ func routes(_ app: Application) throws {
 }
 
 func formatTime(seconds: Double) -> String {
-  let formatter = DateComponentsFormatter()
-  formatter.allowedUnits = [.minute, .second]
-  formatter.unitsStyle = .positional
-  formatter.zeroFormattingBehavior = .pad
-  return formatter.string(from: TimeInterval(seconds)) ?? ""
+  let processedMin = Int(seconds) / 60
+  let processedSec = Int(seconds) % 60
+  return "\(processedMin):\(processedSec < 10 ? "0" : "")\(processedSec)"
 }
 
 struct RSSFeed {
