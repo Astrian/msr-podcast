@@ -19,7 +19,7 @@ final class Album: Model {
   @Field(key: "belong") var belong: String
   @Field(key: "coverUrl") var coverUrl: String
   @Field(key: "coverDeUrl") var coverDeUrl: String
-  @Field(key: "pubTime") var pubTime: Int
+  @Field(key: "pubTime") var pubTime: Date
   
   @Children(for: \.$album) var song: [Song]
   
@@ -34,9 +34,7 @@ final class Album: Model {
     self.coverDeUrl = album.coverDeUrl
     
     // Get now timestamp
-    let now = Date()
-    let timeInterval: TimeInterval = now.timeIntervalSince1970
-    self.pubTime = Int(timeInterval)
+    self.pubTime = Date()
   }
 }
 
@@ -51,7 +49,7 @@ struct CreateAlbum: AsyncMigration {
       .field("belong", .string)
       .field("coverUrl", .string)
       .field("coverDeUrl", .string)
-      .field("pubTime", .int)
+      .field("pubTime", .date)
       .create()
   }
   
