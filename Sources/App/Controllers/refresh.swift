@@ -17,16 +17,15 @@ func refresh(_ db: Database) async {
         let albumDetail = try JSONDecoder().decode(AlbumEndpoint.self, from: albumEndpointData)
         albumEntity = Album(albumDetail.data)
         try await albumEntity?.create(on: db)
+        try await albumEntity?.save(on: db)
         
         for song in albumDetail.data.songs {
           let (songEndpoingData, _) = try await SAN.GET("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
           let songDetail = try JSONDecoder().decode(SongEndpoint.self, from: songEndpoingData)
-          
           let duration = getAudioFileDuration(url: URL(string: songDetail.data.sourceUrl)!)
-          
           let songEntity = Song(songDetail.data, duration ?? 0.0)
-          songEntity.$album.id = albumEntity!.id!
-          try await songEntity.create(on: db)
+          try await albumEntity?.$song.create(songEntity, on: db)
+          try await songEntity.save(on: db)
         }
       }
     }

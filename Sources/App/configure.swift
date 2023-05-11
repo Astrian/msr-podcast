@@ -6,7 +6,7 @@ import Jobs
 // configures your application
 public func configure(_ app: Application) async throws {
   // uncomment to serve files from /Public folder
-  // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+  app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
   // register routes
   try routes(app)
@@ -14,6 +14,8 @@ public func configure(_ app: Application) async throws {
   app.databases.use(.sqlite(.file("data.db")), as: .sqlite)
   app.migrations.add(CreateSong())
   app.migrations.add(CreateAlbum())
+  
+  app.http.server.configuration.port = Int(String(Environment.get("PORT") ?? "3000")) ?? 3000
   
   Jobs.add(interval: .hours(1)) {
     Task {

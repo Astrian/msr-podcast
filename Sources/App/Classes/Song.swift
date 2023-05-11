@@ -63,7 +63,7 @@ struct CreateSong: AsyncMigration {
       .field("name", .string)
       .field("sourceUrl", .string)
       .field("duration", .double)
-      .field("album", .string)
+      .field("album", .uuid, .required, .references("album", "id"))
       .create()
   }
   
