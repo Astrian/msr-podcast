@@ -101,9 +101,3 @@ struct AlbumEndpointEntity: Decodable {
   let coverDeUrl: String
   let songs: [AlbumsEndpointEntitySongs]
 }
-
-func getAudioFileDuration(url: URL) -> Double? {
-  let asset = AVURLAsset(url: url)
-  let audioDuration = asset.duration
-  return CMTimeGetSeconds(audioDuration)
-}
