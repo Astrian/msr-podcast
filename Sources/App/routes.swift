@@ -21,7 +21,7 @@ func routes(_ app: Application) throws {
     <itunes:subtitle>塞壬唱片所有音乐（非官方馈送）</itunes:subtitle>
     <itunes:author>塞壬唱片</itunes:author>
     <itunes:summary>塞壬唱片所有音乐（非官方馈送）</itunes:summary>
-    <itunes:image href="\(String(describing: Environment.get("DOMAIN") ?? "http://localhost:3000"))/cover.png"/>
+    <itunes:image href="\(String(describing: Environment.get("DOMAIN") ?? "http://localhost:3000"))/cover.jpg"/>
     <itunes:explicit>no</itunes:explicit>
     <itunes:keywords>塞壬唱片,Monster Siren Records,明日方舟</itunes:keywords>
     <itunes:owner>
@@ -53,7 +53,7 @@ func routes(_ app: Application) throws {
       <guid isPermaLink="false">\(song.cid)</guid>
       <pubDate>\(dateFormatter.string(from: album.pubTime))</pubDate>
       <author>\(song.artists)</author>
-      <enclosure url="\(song.sourceUrl)" length="\(song.size)" type="\(String(song.sourceUrl.suffix(3)) == "mp3" ? "audio/mpeg" : "audio/wav")"/>
+      <enclosure url="\(song.sourceUrl)" type="\(String(song.sourceUrl.suffix(3)) == "mp3" ? "audio/mpeg" : "audio/wav")"/>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:author>\(song.artists)</itunes:author>
       <itunes:subtitle/>
