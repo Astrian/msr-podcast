@@ -2,8 +2,6 @@ import FluentKit
 import Foundation
 import FluentSQLiteDriver
 import Vapor
-import AVFoundation
-
 
 func refresh(_ db: Database, _ client: Client) async {
   do {
@@ -21,9 +19,9 @@ func refresh(_ db: Database, _ client: Client) async {
         for song in albumDetail.data.songs {
           let songEndpoingData = try await client.get("https://monster-siren.hypergryph.com/api/song/\(song.cid)")
           let songDetail = try songEndpoingData.content.decode(SongEndpoint.self)
-          let duration = getAudioFileDuration(url: URL(string: songDetail.data.sourceUrl)!)
+          let duration = 0.0
           let size = 0
-          let songEntity = Song(songDetail.data, duration ?? 0.0, size)
+          let songEntity = Song(songDetail.data, duration, size)
           try await albumEntity?.$song.create(songEntity, on: db)
           try await songEntity.save(on: db)
         }
